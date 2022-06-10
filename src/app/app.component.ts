@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
 import { DataState } from './emun/data-state.enum';
 import { Status } from './emun/status.enum';
@@ -14,7 +14,15 @@ import { NotificationService } from './service/notification.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  //the next line, the component is gonna check the changes
+  //when a the component initializes,
+  //this can be done because our variables are Observables,
+  //i.e. we have appState$ as Observable
+  //The default strategy checks all the time for
+  //changes in all variables, fir that reason
+  //its resources requirement can be high
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
   appState$!: Observable<AppState<CustomResponse>>;
