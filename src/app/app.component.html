@@ -37,8 +37,8 @@
 
     <ng-container *ngSwitchCase="DataState.LOADED_STATE">
 
-        <table mat-table [dataSource]="getDataSource(appState.appData?.data?.server, appState.appData?.data?.servers)"
-            class="mat-elevation-z8 demo-table" id="servidores">
+        <table mat-table [dataSource]="appState?.appData?.data?.servers || []" class="mat-elevation-z8 demo-table"
+            id="servidores" #tabla>
             <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
                 <th mat-header-cell *matHeaderCellDef>
                     {{column.header}}
@@ -51,7 +51,7 @@
                     ((filterStatus$ | async) === row.ipAddress ?
                     'Querying...'
                     :
-                    (column.cell(row) === Status.SERVER_UP
+                    (row.status === Status.SERVER_UP
                     ?
                     'Server UP'
                     :
@@ -59,7 +59,7 @@
                     ))
                     }}
                     <button *ngIf="column.columnDef === 'ping'" mat-icon-button color="primary" class="action-button"
-                        (click)="pingServer(row.ipAddress)">
+                        (click)="pingAndRerenderTable(row.ipAddress)">
                         <ng-container
                             *ngIf="(filterStatus$ | async) === '' || (filterStatus$ | async) !== row.ipAddress">
                             <mat-icon>

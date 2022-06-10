@@ -9,7 +9,8 @@ import { ServerService } from './service/server.service';
 import { CreateServerDialogComponent } from './create-server-dialog/create-server-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { NotificationService } from './service/notification.service';
-
+import { ViewChild } from '@angular/core';
+import { MatTable } from '@angular/material/table';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +26,8 @@ import { NotificationService } from './service/notification.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
+  private i = 1;
+  @ViewChild('tabla') table!: MatTable<any>;
   appState$!: Observable<AppState<CustomResponse>>;
   readonly DataState = DataState;
   readonly Status = Status;
@@ -95,10 +98,10 @@ export class AppComponent {
   }
 
 
-  getDataSource<Server>(server?: Server, servers?: Server[]): Server[] {
-    if (server) return [server];
-    if (servers) return servers;
-    return [];
+  getDataSource<server>(server: Server, servers: Server[]): string {
+
+    return "asdf" //this.appState$?.
+    //.pipe(appData?.data?.servers.filter(x => x.id === row.id)?.status;
   }
 
 
@@ -118,14 +121,25 @@ export class AppComponent {
       );
   }
 
+  pingAndRerenderTable(ipAddress: string): void {
+    if (this.i === 1 && this.table) {
+      this.dataSubject.subscribe(() => {
+        this.table.renderRows();
+      });
+      this.i = 2;
+    }
+    this.pingServer(ipAddress);
+  }
 
   pingServer(ipAddress: string): void {
     this.filterSubject.next(ipAddress);
     this.appState$ = this.serverService.ping$(ipAddress)
       .pipe(
         map(response => {
+          this.filterSubject.next('');
           this.notifier.onDefault(response.message);
-          this.dataSubject.value.data.servers && response.data.server ?
+          response.data.server && this.dataSubject.value.data.servers
+            ?
             this.dataSubject.value.data.servers[
             this.dataSubject.value.data.servers.findIndex(
               server => server.id === response.data.server?.id
@@ -133,7 +147,7 @@ export class AppComponent {
             ] = response.data.server
             :
             null;
-          this.filterSubject.next('');
+          this.dataSubject.next(this.dataSubject.value);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
         }),
         startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
