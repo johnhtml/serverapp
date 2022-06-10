@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
 import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
 import { DataState } from './emun/data-state.enum';
 import { Status } from './emun/status.enum';
@@ -9,6 +8,7 @@ import { Server } from './interface/server';
 import { ServerService } from './service/server.service';
 import { CreateServerDialogComponent } from './create-server-dialog/create-server-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { NotificationService } from './service/notification.service';
 
 
 @Component({
@@ -25,6 +25,7 @@ export class AppComponent {
   filterStatus$ = this.filterSubject.asObservable();
   private isLoading = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoading.asObservable();
+
 
   columns = [
     {
@@ -71,7 +72,7 @@ export class AppComponent {
 
   displayedColumns = this.columns.map(c => c.columnDef);
 
-  constructor(private serverService: ServerService, public dialog: MatDialog) { }
+  constructor(private serverService: ServerService, public dialog: MatDialog, private notifier: NotificationService) { }
 
 
   openDialog(): void {
@@ -97,11 +98,13 @@ export class AppComponent {
     this.appState$ = this.serverService.servers$
       .pipe(
         map(response => {
+          this.notifier.onDefault(response.message);
           this.dataSubject.next(response);
           return { dataState: DataState.LOADED_STATE, appData: { ...response, data: { servers: response.data.servers?.reverse() } } }
         }),
         startWith({ dataState: DataState.LOADING_STATE }),
         catchError((error: string) => {
+          this.notifier.onError(error);
           return of({ dataState: DataState.ERROR_STATE, error: error });
         })
       );
@@ -113,6 +116,7 @@ export class AppComponent {
     this.appState$ = this.serverService.ping$(ipAddress)
       .pipe(
         map(response => {
+          this.notifier.onDefault(response.message);
           this.dataSubject.value.data.servers && response.data.server ?
             this.dataSubject.value.data.servers[
             this.dataSubject.value.data.servers.findIndex(
@@ -127,6 +131,7 @@ export class AppComponent {
         startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
         catchError((error: string) => {
           this.filterSubject.next('');
+          this.notifier.onError(error);
           return of({ dataState: DataState.ERROR_STATE, error: error });
         })
       );
@@ -137,10 +142,12 @@ export class AppComponent {
     this.appState$ = this.serverService.filter$(status, this.dataSubject.value)
       .pipe(
         map(response => {
+          this.notifier.onDefault(response.message);
           return { dataState: DataState.LOADED_STATE, appData: response }
         }),
         startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
         catchError((error: string) => {
+          this.notifier.onError(error);
           return of({ dataState: DataState.ERROR_STATE, error: error });
         })
       );
@@ -153,6 +160,7 @@ export class AppComponent {
     this.appState$ = this.serverService.save$(serverForm as Server)
       .pipe(
         map(response => {
+          this.notifier.onDefault(response.message);
           response.data.server && this.dataSubject.value.data.servers ?
             this.dataSubject.next(
               { ...response, data: { servers: [response.data.server, ...this.dataSubject.value.data.servers] } }
@@ -165,6 +173,7 @@ export class AppComponent {
         startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
         catchError((error: string) => {
           this.isLoading.next(false);
+          this.notifier.onError(error);
           return of({ dataState: DataState.ERROR_STATE, error: error });
         })
       );
@@ -183,10 +192,12 @@ export class AppComponent {
               }
             }
           );
+          this.notifier.onDefault(response.message);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
         }),
         startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
         catchError((error: string) => {
+          this.notifier.onError(error);
           return of({ dataState: DataState.ERROR_STATE, error: error });
         })
       );
@@ -198,6 +209,7 @@ export class AppComponent {
   }
 
   downloadExcel(): void {
+    this.notifier.onDefault('Report downloaded');
     let dataType = 'application/vnd.ms-excel.sheet.macroEnabled.12';
     let tableSelect = document.getElementById('servidores');
     let tableHtml = tableSelect?.outerHTML.replace(/ /g, '%20');
