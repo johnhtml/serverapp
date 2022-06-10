@@ -1,0 +1,53 @@
+.flex-column-expand {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row-justify-end {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+::ng-deep.mat-form-field.mat-focused .mat-form-field-ripple {
+    background-color: antiquewhite;
+    color: antiquewhite;
+}
+
+::ng-deep.mat-form-field-infix.ng-tns-c79-2 {
+    color: antiquewhite;
+}
+
+::ng-deep.mat-form-field.mat-focused .ng-tns-c79-2 {
+    color: antiquewhite;
+}
+
+
+::ng-deep.mat-form-field.mat-focused .ng-tns-c79-3 {
+    color: antiquewhite;
+}
+
+
+::ng-deep.mat-form-field.mat-focused .ng-tns-c79-4 {
+    color: antiquewhite;
+}
+
+::ng-deep.mat-form-field.mat-focused .ng-tns-c79-5 {
+    color: antiquewhite;
+}
+
+::ng-deep.mat-form-field.mat-focused .ng-tns-c79-6 {
+    color: antiquewhite;
+}
+
+::ng-deep.mat-option.mat-focus-indicator.ng-tns-c85-7.mat-selected.mat-active {
+    color: antiquewhite;
+}
+
+#mat-input-0,
+#mat-input-1,
+#mat-input-2,
+#mat-input-3,
+#mat-input-4 {
+    caret-color: antiquewhite;
+}

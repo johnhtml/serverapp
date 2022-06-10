@@ -1,0 +1,32 @@
+<div mat-dialog-content>
+    <p>Create new server</p>
+    <form #serverForm="ngForm" (ngSubmit)="saveDetails(serverForm)" class="flex-column-expand">
+        <mat-form-field appearance="fill">
+            <mat-label>Server name</mat-label>
+            <input matInput [(ngModel)]="data.name" required name="name">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>IP</mat-label>
+            <input matInput [(ngModel)]="data.ipAddress" required name="ipAddress">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Memory</mat-label>
+            <input matInput [(ngModel)]="data.memory" required name="memory">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Type</mat-label>
+            <input matInput [(ngModel)]="data.type" required name="type">
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Status</mat-label>
+            <mat-select matInput [(ngModel)]="data.status" required name="status">
+                <mat-option value="SERVER_UP">Server up</mat-option>
+                <mat-option value="SERVER_DOWN">Server down</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </form>
+</div>
+<div mat-dialog-actions class="flex-row-justify-end">
+    <button mat-button mat-dialog-close id="closeModal">Cancel</button>
+    <button mat-button type="submit" [mat-dialog-close]="data" [disabled]="!serverForm.valid">Save server</button>
+</div>
