@@ -3,7 +3,7 @@
 This FrontEnd implementation is related to the "server" project based on the Spring Boot Framework.
 It is capable of send PUT, POST, DELETE and GET requests.
 
-A quick view of the app, the next image provide a quick view of the project:
+The next image provide a quick view of the project:
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/50509447/173255748-db238718-d911-47af-9fbf-db5598954f1e.png" alt="Sublime's custom image"/>
