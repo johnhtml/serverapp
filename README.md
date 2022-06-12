@@ -1,6 +1,6 @@
 # Serverapp
 
-This FrontEnd implementation is related to the "server" project based on the Spring Boot Framework.
+This Angular 13 implementation is related to the "server" project based on the Spring Boot Framework.
 It is capable of send PUT, POST, DELETE and GET requests.
 
 The next image provide a quick view of the project:
